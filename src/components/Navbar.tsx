@@ -26,14 +26,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-[8px] sm:top-[12px] left-[8px] sm:left-[12px] right-[8px] sm:right-[12px] h-20 bg-[var(--color-kvs-light)] border-b-2 border-[var(--color-kvs-dark)] z-50 flex items-center justify-between px-6 md:px-10"
+      className="fixed top-[8px] sm:top-[12px] left-[8px] sm:left-[12px] right-[8px] sm:right-[12px] h-16 md:h-20 bg-[var(--color-kvs-light)] border-b-2 border-[var(--color-kvs-dark)] z-50 flex items-center justify-between px-3 md:px-10"
     >
-      <div className="cursor-pointer flex items-center gap-4" onClick={handleLogoClick}>
-        <img src="/logo.png" alt="Logo" className="h-10 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-        <span className="text-display font-bold text-2xl tracking-tighter">FANGYU MOU.</span>
+      <div className="cursor-pointer flex items-center gap-2 md:gap-4 shrink-0 min-w-0" onClick={handleLogoClick}>
+        <img src="/logo.png" alt="Logo" className="h-5 md:h-10 object-contain shrink-0" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+        <span className="text-display font-bold text-sm sm:text-lg md:text-2xl tracking-tighter leading-none whitespace-nowrap truncate">FANGYU MOU.</span>
       </div>
       
-      <div className="flex gap-8 items-center text-sm font-medium uppercase tracking-widest">
+      <div className="flex gap-2 md:gap-8 items-center text-[10px] md:text-sm font-medium uppercase tracking-widest shrink-0 ml-2">
         <button onClick={() => onNavigate('work')} className="hover:underline transition-all">
           {t.nav.work}
         </button>
