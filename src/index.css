@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --color-kvs-dark: #0F0F0F;
+  --color-kvs-light: #F4F4F1;
+  --color-kvs-gray: rgba(15, 15, 15, 0.5);
+  --color-kvs-accent: #EAEAE8;
+}
+
+body {
+  background-color: var(--color-kvs-light);
+  color: var(--color-kvs-dark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--color-kvs-dark);
+  color: var(--color-kvs-light);
+}
+
+.text-display {
+  font-family: var(--font-display);
+}
+
+/* Custom Cursor (Optional) */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-kvs-dark);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+}
+
+.cursor-hover .custom-cursor {
+  width: 60px;
+  height: 60px;
+  background-color: transparent;
+  border: 1px solid var(--color-kvs-dark);
+}
+
