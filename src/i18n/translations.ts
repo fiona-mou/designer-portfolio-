@@ -406,7 +406,7 @@ export const translations = {
     about: {
       title: "About",
       description1:
-        "I am Fangyu Mou, a UI/UX Designer and Creative Developer based in Turin, Italy. I blend visual design with creative coding to build immersive digital experiences.",
+        "I am Fangyu Mou, 24 years old,a UI/UX Designer and Creative Developer based in Turin, Italy. I blend visual design with creative coding to build immersive digital experiences.",
       description2:
         "With a background in New Technologies of Art at the Accademia Albertina di Torino, my approach focuses on data visualization, frontend technologies, and interactive design.",
       contact: "Get in touch",
@@ -819,7 +819,7 @@ export const translations = {
     about: {
       title: "关于我",
       description1:
-        "我是牟芳昱，一名现居意大利都灵的 UI/UX 设计师和创意开发者（Creative Developer）。我将视觉设计与创意编程相融合，打造沉浸式的数字体验。",
+        "我是牟芳昱，24岁，一名现居意大利都灵的 UI/UX 设计师和创意开发者（Creative Developer）。我将视觉设计与创意编程相融合，打造沉浸式的数字体验。",
       description2:
         "我就读于都灵美术学院艺术新技术（NTA）专业，擅长将调研数据可视化与现代前端交互技术结合，已斩获十余项国际设计大奖。",
       contact: "联系我",
@@ -1237,7 +1237,7 @@ export const translations = {
     about: {
       title: "Chi sono",
       description1:
-        "Sono Fangyu Mou, UI/UX Designer e Creative Developer residente a Torino, Italia. Unisco il design visivo al creative coding per costruire esperienze digitali immersive.",
+        "Sono Fangyu Mou, 24 anni,UI/UX Designer e Creative Developer residente a Torino, Italia. Unisco il design visivo al creative coding per costruire esperienze digitali immersive.",
       description2:
         "Con un background in Nuove Tecnologie dell'Arte presso l'Accademia Albertina di Torino, il mio approccio si concentra sulla visualizzazione dei dati, tecnologie frontend e design interattivo.",
       contact: "Contattami",
