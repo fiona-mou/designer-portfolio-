@@ -50,3 +50,28 @@ body {
   border: 1px solid var(--color-kvs-dark);
 }
 
+
+/* Recruitment edition: existing palette, type, borders and motion retained. */
+html { scroll-behavior: smooth; scroll-padding-top: 7rem; }
+section[id], #all-projects, #contact { scroll-margin-top: 7rem; }
+#work, #skills, #recognition, #about { scroll-margin-top: 0; }
+.recruitment-hero { min-height: calc(100svh - 6rem); padding-top: 4rem; padding-bottom: 5rem; }
+.portfolio-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .75rem 1.1rem; border: 1px solid currentColor; font-size: .65rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; transition: background-color .25s, color .25s; }
+.portfolio-button:hover { background: var(--color-kvs-dark); color: var(--color-kvs-light); }
+.section-label { display: inline-block; background: var(--color-kvs-dark); color: var(--color-kvs-light); padding: .3rem .75rem; font-size: .875rem; font-weight: 500; text-transform: uppercase; letter-spacing: .1em; }
+.skip-link { position: fixed; top: -10rem; left: 1rem; z-index: 1000; background: var(--color-kvs-dark); color: white; padding: 1rem; }
+.skip-link:focus { top: 1rem; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
+.case-figure { border: 1px solid var(--color-kvs-dark); background: white; }
+.case-figure img { display: block; width: 100%; height: auto; }
+.case-figure figcaption { padding: .9rem 1rem; font-size: .75rem; line-height: 1.6; border-top: 1px solid currentColor; }
+@media (max-width: 767px) {
+  .recruitment-hero { min-height: calc(100svh - 5rem); padding-top: 4rem; padding-bottom: 4rem; }
+  .custom-cursor { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+.portfolio-footer a, .portfolio-footer button { min-height: 32px; display: inline-flex; align-items: center; }

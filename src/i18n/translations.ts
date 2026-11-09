@@ -4,13 +4,18 @@ export const translations = {
   en: {
     nav: {
       work: "Work",
+      skills: "Skills",
+      awards: "Awards",
       about: "About",
+      navigation: "Main navigation",
+      openMenu: "Open navigation",
+      closeMenu: "Close navigation",
     },
     hero: {
-      title: "CREATIVE",
-      title2: "DEVELOPER",
+      title: "MULTIDISCIPLINARY",
+      title2: "DESIGNER",
       subtitle:
-        "UI/UX Designer & Creative Developer with a focus on visual systems and digital experiences.",
+        "Visual Communication · Digital Experiences · Creative Technology",
     },
     work: {
       title: "Selected Works",
@@ -406,9 +411,11 @@ export const translations = {
     about: {
       title: "About",
       description1:
-        "I am Fangyu Mou, 24 years old,a UI/UX Designer and Creative Developer based in Turin, Italy. I blend visual design with creative coding to build immersive digital experiences.",
+        "I'm Fangyu Mou, a multidisciplinary designer based in Italy, with undergraduate and postgraduate studies in Nuove Tecnologie dell’Arte at Accademia Albertina di Belle Arti di Torino. My practice brings together visual communication, digital experiences, and creative technology, balancing aesthetic expression, interaction design, and technical implementation.",
+      practice: "My work brings visual judgement together with clear information structures, analytical thinking and creative exploration. Through delivered WordPress websites and cross-media projects, I develop ideas with close attention to both the overall experience and the details.",
+      aiWorkflow: "ChatGPT, Gemini and Codex support my exploration, prototyping, development and QA. I take responsibility for the final design decisions and quality of the work.",
       description2:
-        "With a background in New Technologies of Art at the Accademia Albertina di Torino, my approach focuses on data visualization, frontend technologies, and interactive design.",
+        "Bachelor’s degree completed. Master’s coursework completed; thesis in progress. Expected graduation: March 2027.",
       contact: "Get in touch",
     },
     footer: {
@@ -418,12 +425,17 @@ export const translations = {
   zh: {
     nav: {
       work: "作品",
+      skills: "技能",
+      awards: "荣誉",
       about: "关于",
+      navigation: "主导航",
+      openMenu: "打开导航",
+      closeMenu: "关闭导航",
     },
     hero: {
-      title: "UI / UX",
-      title2: "DESIGNER",
-      subtitle: "UI/UX 设计师与创意开发者，专注于视觉体系与交互动效。",
+      title: "跨领域",
+      title2: "设计师",
+      subtitle: "视觉传达 · 数字体验 · 创意技术",
     },
     work: {
       title: "精选作品",
@@ -819,9 +831,11 @@ export const translations = {
     about: {
       title: "关于我",
       description1:
-        "我是牟芳昱，24岁，一名现居意大利都灵的 UI/UX 设计师和创意开发者（Creative Developer）。我将视觉设计与创意编程相融合，打造沉浸式的数字体验。",
+        "我是牟芳昱，一名现居意大利的跨领域设计师，具有意大利都灵美术学院（Accademia Albertina di Belle Arti di Torino）Nuove Tecnologie dell’Arte 专业的本硕阶段教育背景。我的设计实践融合视觉传达、数字体验与创意技术，注重审美表达、交互逻辑与技术实现之间的平衡。",
+      practice: "我关注视觉审美与信息结构，通过分析思考和创造性探索建立清晰的设计方向。已有 WordPress 网站交付和跨媒介项目实践，也会持续打磨整体体验与具体细节。",
+      aiWorkflow: "在探索、原型设计、开发协作与 QA 中，我使用 ChatGPT、Gemini 和 Codex 辅助推进工作。最终的设计判断与质量验收由我负责。",
       description2:
-        "我就读于都灵美术学院艺术新技术（NTA）专业，擅长将调研数据可视化与现代前端交互技术结合，已斩获十余项国际设计大奖。",
+        "本科已完成；硕士课程已完成，毕业论文进行中，预计 2027 年 3 月毕业。",
       contact: "联系我",
     },
     footer: {
@@ -830,14 +844,19 @@ export const translations = {
   },
   it: {
     nav: {
-      work: "Lavori",
+      work: "Progetti",
+      skills: "Competenze",
+      awards: "Premi",
       about: "Chi sono",
+      navigation: "Navigazione principale",
+      openMenu: "Apri navigazione",
+      closeMenu: "Chiudi navigazione",
     },
     hero: {
-      title: "CREATIVE",
-      title2: "DEVELOPER",
+      title: "DESIGNER",
+      title2: "MULTIDISCIPLINARE",
       subtitle:
-        "UI/UX Designer e Creative Developer con focus su sistemi visivi ed esperienze digitali.",
+        "Comunicazione visiva · Esperienze digitali · Tecnologie creative",
     },
     work: {
       title: "Lavori Selezionati",
@@ -1237,9 +1256,11 @@ export const translations = {
     about: {
       title: "Chi sono",
       description1:
-        "Sono Fangyu Mou, 24 anni,UI/UX Designer e Creative Developer residente a Torino, Italia. Unisco il design visivo al creative coding per costruire esperienze digitali immersive.",
+        "Sono Fangyu Mou, una designer multidisciplinare che vive in Italia, con un percorso di studi di primo e secondo livello in Nuove Tecnologie dell’Arte presso l’Accademia Albertina di Belle Arti di Torino. La mia pratica progettuale integra comunicazione visiva, esperienze digitali e tecnologie creative, con particolare attenzione all’equilibrio tra espressione estetica, interazione e realizzazione tecnica.",
+      practice: "Unisco sensibilità visiva, struttura dell’informazione e pensiero analitico alla sperimentazione creativa. Ho realizzato siti WordPress e progetti crossmediali, curando la coerenza dell’esperienza e i dettagli.",
+      aiWorkflow: "ChatGPT, Gemini e Codex mi affiancano nell’esplorazione, nella prototipazione, nello sviluppo e nel controllo qualità. Le decisioni finali di design e la responsabilità della qualità restano mie.",
       description2:
-        "Con un background in Nuove Tecnologie dell'Arte presso l'Accademia Albertina di Torino, il mio approccio si concentra sulla visualizzazione dei dati, tecnologie frontend e design interattivo.",
+        "Diploma di primo livello conseguito. Corsi del biennio completati; tesi in corso. Diploma di secondo livello previsto: marzo 2027.",
       contact: "Contattami",
     },
     footer: {
