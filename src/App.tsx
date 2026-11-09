@@ -9,40 +9,44 @@ import { Playground } from './components/Playground';
 import { About } from './components/About';
 import { Footer } from './components/Footer';
 import { ProjectDetail } from './components/ProjectDetail';
+import { Skills } from './components/Skills';
+import { Recognition } from './components/Recognition';
+import { Experience } from './components/Experience';
+import { useLanguage } from './context/LanguageContext';
 
 function MainLayout() {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const section = params.get('section');
+    const section = location.hash.slice(1) || new URLSearchParams(location.search).get('section');
     if (section) {
-      setTimeout(() => {
+      const frame = requestAnimationFrame(() => {
         const el = document.getElementById(section);
         if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      // clean up URL
-      navigate('/', { replace: true });
+      });
+      return () => cancelAnimationFrame(frame);
     }
-  }, [location, navigate]);
+  }, [location.hash, location.search, location.key]);
 
   const handleNavigate = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate(`/#${sectionId}`);
   };
 
   return (
     <div className="min-h-screen bg-[var(--color-kvs-light)] text-[var(--color-kvs-dark)] flex flex-col relative overflow-x-hidden selection:bg-[var(--color-kvs-dark)] selection:text-[var(--color-kvs-light)]">
       <div className="fixed inset-0 pointer-events-none border-[8px] sm:border-[12px] border-[var(--color-kvs-dark)] z-[100]"></div>
+      <a href="#main-content" className="skip-link">{t.recruitment.skip}</a>
       <Cursor />
       <Navbar onNavigate={handleNavigate} />
-      <main className="w-full flex-1 pt-24 pb-0">
+      <main id="main-content" className="w-full flex-1 pt-20 md:pt-24 pb-0">
         <Hero />
-        <Playground />
         <Work />
+        <Playground />
+        <Skills />
+        <Recognition />
+        <Experience />
         <About />
       </main>
       <Footer />

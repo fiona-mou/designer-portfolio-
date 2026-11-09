@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion, useInView, useScroll, useTransform } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { featuredIds } from '../data/recruitment';
 
 export const Work: React.FC = () => {
   const { t } = useLanguage();
@@ -16,16 +17,29 @@ export const Work: React.FC = () => {
         transition={{ duration: 0.6 }}
         className="px-6 md:px-10 mb-12 flex items-center justify-between"
       >
-        <span className="text-sm font-medium uppercase tracking-widest bg-[var(--color-kvs-dark)] text-[var(--color-kvs-light)] px-3 py-1">
-          {t.work.title}
-        </span>
+        <h2 className="text-sm font-medium uppercase tracking-widest bg-[var(--color-kvs-dark)] text-[var(--color-kvs-light)] px-3 py-1">
+          {t.recruitment.featured}
+        </h2>
         <span className="w-8 h-[2px] bg-[var(--color-kvs-dark)]"></span>
       </motion.div>
       
       <div className="flex flex-col border-[var(--color-kvs-dark)] border-t border-b bg-[var(--color-kvs-dark)] gap-px">
-        {t.projects.map((project: any, index: number) => (
+        {featuredIds.map(id => t.projects.find(project => project.id === id)!).map((project, index) => (
           <ProjectItem key={project.id} project={project} index={index} t={t} />
         ))}
+      </div>
+      <div id="all-projects" className="px-6 md:px-10 pt-20">
+        <h2 className="text-sm uppercase tracking-widest font-bold mb-8">{t.recruitment.allProjects}</h2>
+        <div className="border-t border-current">
+          {t.projects.filter(project => project.collection !== 'course').map(project => (
+            <Link key={project.id} to={`/project/${project.slug || project.id}`} className="project-index-row grid grid-cols-[1fr_auto] md:grid-cols-[2fr_2fr_1fr_auto] gap-3 py-5 border-b border-current items-center hover:bg-[var(--color-kvs-light)]">
+              <span className="font-bold text-lg">{project.title}</span>
+              <span className="hidden md:block text-sm font-serif italic">{project.meta.type}</span>
+              <span className="text-xs md:text-right">{project.year}</span>
+              <span className="hidden md:block" aria-hidden="true">↗</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -43,13 +57,7 @@ const ProjectItem: React.FC<{ project: any, index: number, t: any }> = ({ projec
 
   const imgY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
-  const handleViewProject = () => {
-    if (project.link) {
-      window.open(project.link, '_blank');
-    } else {
-      navigate(`/project/${project.id}`);
-    }
-  };
+  const handleViewProject = () => navigate(`/project/${project.slug || project.id}`);
 
   return (
     <motion.div 
@@ -63,6 +71,10 @@ const ProjectItem: React.FC<{ project: any, index: number, t: any }> = ({ projec
            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
            className="relative aspect-[4/3] w-full cursor-pointer overflow-hidden"
            onClick={handleViewProject}
+           role="link"
+           tabIndex={0}
+           aria-label={`${t.recruitment.viewCase}: ${project.title}`}
+           onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleViewProject(); } }}
         >
           <motion.div style={{ y: imgY, height: "120%", width: "100%", originY: 0 }} className="absolute -top-[10%] left-0 right-0">
           {(project.image?.includes('youtu.be') || project.image?.includes('youtube.com')) ? (
@@ -77,8 +89,10 @@ const ProjectItem: React.FC<{ project: any, index: number, t: any }> = ({ projec
             </div>
           ) : (project.image?.endsWith('.mov') || project.image?.endsWith('.mp4')) ? (
             <video 
-              src={project.image} 
-              autoPlay 
+              src={isInView ? project.image : undefined}
+              poster={project.gallery?.find((image: string) => /\.(jpe?g|png|webp)$/i.test(image))}
+              preload="metadata"
+              autoPlay={isInView}
               muted 
               loop 
               playsInline
@@ -88,6 +102,8 @@ const ProjectItem: React.FC<{ project: any, index: number, t: any }> = ({ projec
             <img 
               src={project.image} 
               alt={project.title}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover grayscale opacity-90 transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
             />
           )}
@@ -108,12 +124,20 @@ const ProjectItem: React.FC<{ project: any, index: number, t: any }> = ({ projec
           <h3 className="text-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
             {project.title}
           </h3>
-          <p className="text-xs uppercase tracking-widest font-serif italic mb-12 opacity-80">{project.category}</p>
+          <p className="text-xs uppercase tracking-widest font-serif italic mb-5 opacity-80">{project.category}</p>
+          <p className="text-sm leading-relaxed mb-5">{project.meta.summary}</p>
+          <p className="text-[10px] uppercase tracking-wide opacity-75 mb-3">{project.meta.type}</p>
+          <p className="text-sm leading-relaxed mb-6"><strong>{t.recruitment.role}:</strong> {project.meta.role}</p>
+          <div className="flex flex-wrap gap-2 mb-8">{project.meta.tools.slice(0, 5).map((tool: string) => <span key={tool} className="text-[10px] border border-current px-2 py-1">{tool}</span>)}</div>
           <button 
             onClick={handleViewProject}
+           role="link"
+           tabIndex={0}
+           aria-label={`${t.recruitment.viewCase}: ${project.title}`}
+           onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleViewProject(); } }}
             className="text-sm font-bold uppercase tracking-widest border-b-2 border-transparent hover:border-[var(--color-kvs-dark)] transition-colors cursor-pointer w-fit"
           >
-            {t.work.viewProject}
+            {t.recruitment.viewCase}
           </button>
         </motion.div>
       </div>

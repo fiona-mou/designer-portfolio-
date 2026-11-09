@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { Navbar } from "./Navbar";
@@ -10,17 +10,43 @@ export const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const lightboxRef = useRef<HTMLDivElement>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const project = t.projects.find((p: any) => p.id.toString() === id);
+  const project = t.projects.find((p: any) => p.id.toString() === id || p.slug === id);
 
+  useEffect(() => {
+    if (!project) return;
+    document.title = `${project.title} — Fangyu Mou`;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', project.meta.summary);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', document.title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', project.meta.summary);
+    const cover = project.image.match(/\.(mov|mp4)$/i) ? project.gallery?.find(image => /\.(png|jpe?g|webp)$/i.test(image)) || '/logo.png' : project.image;
+    document.querySelector('meta[property="og:image"]')?.setAttribute('content', new URL(cover, window.location.origin).href);
+  }, [project]);
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    lightboxRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+    return () => { document.body.style.overflow = overflow; previous?.focus(); };
+  }, [lightboxIndex !== null]);
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (lightboxIndex === null || !project?.gallery) return;
+      if (e.key === 'Tab') {
+        const buttons = lightboxRef.current?.querySelectorAll<HTMLButtonElement>('button');
+        if (buttons?.length) {
+          const first = buttons[0], last = buttons[buttons.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
       if (e.key === "Escape") setLightboxIndex(null);
       if (e.key === "ArrowRight")
         setLightboxIndex((prev) => (prev! + 1) % project.gallery.length);
@@ -37,9 +63,9 @@ export const ProjectDetail: React.FC = () => {
   if (!project) {
     return (
       <div className="min-h-screen bg-[var(--color-kvs-light)] text-[var(--color-kvs-dark)] flex items-center justify-center">
-        <h1 className="text-4xl font-bold">Project not found</h1>
+        <h1 className="text-4xl font-bold">{t.recruitment.notFound}</h1>
         <button onClick={() => navigate("/")} className="mt-4 hover:underline">
-          Back to Home
+          {t.recruitment.back}
         </button>
       </div>
     );
@@ -48,21 +74,22 @@ export const ProjectDetail: React.FC = () => {
   return (
     <div className="min-h-screen bg-[var(--color-kvs-light)] text-[var(--color-kvs-dark)] flex flex-col relative overflow-x-hidden selection:bg-[var(--color-kvs-dark)] selection:text-[var(--color-kvs-light)]">
       <div className="fixed inset-0 pointer-events-none border-[8px] sm:border-[12px] border-[var(--color-kvs-dark)] z-[100]"></div>
+      <a href="#project-content" className="skip-link">{t.recruitment.skip}</a>
       <Cursor />
       <Navbar
         onNavigate={(section) => {
-          navigate(`/?section=${section}`);
+          navigate(`/#${section}`);
         }}
       />
 
-      <main className="w-full flex-1 pt-32 pb-24 px-6 md:px-10 max-w-7xl mx-auto">
+      <main id="project-content" className="w-full flex-1 pt-32 pb-24 px-6 md:px-10 max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight uppercase">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight uppercase break-words min-w-0">
               {project.title}
             </h1>
             <p className="text-sm uppercase tracking-widest font-serif italic max-w-xs md:text-right opacity-80">
@@ -70,10 +97,15 @@ export const ProjectDetail: React.FC = () => {
             </p>
           </div>
 
+          <p className="text-xl md:text-2xl font-serif italic leading-relaxed max-w-3xl mb-8">{project.meta.summary}</p>
+          <div className="flex flex-wrap gap-4 mb-10">
+            <a href="#project-overview" className="portfolio-button">{t.recruitment.overview} ↓</a>
+            {project.meta.liveUrl && <a className="portfolio-button" href={project.meta.liveUrl} target="_blank" rel="noreferrer">{project.liveLabel || t.recruitment.live} ↗</a>}
+          </div>
           <div className="w-full aspect-video border-2 border-[var(--color-kvs-dark)] mb-16 relative group">
             {(project.image?.includes('youtu.be') || project.image?.includes('youtube.com')) ? (
               <div className="w-full h-full pointer-events-none relative overflow-hidden bg-black">
-                  <iframe
+                  <iframe loading="lazy"
                     src={`https://www.youtube.com/embed/${project.image.split('/').pop()?.split('?')[0]}?autoplay=1&mute=1&loop=1&playlist=${project.image.split('/').pop()?.split('?')[0]}&controls=0&disablekb=1&playsinline=1`}
                     className="absolute inset-0 w-full h-full scale-[1.05]"
                     style={{ border: 'none' }}
@@ -83,7 +115,7 @@ export const ProjectDetail: React.FC = () => {
               </div>
             ) : project.image?.endsWith(".mov") ||
             project.image?.endsWith(".mp4") ? (
-              <video
+              <video preload="metadata"
                 src={project.image}
                 autoPlay
                 muted
@@ -92,56 +124,54 @@ export const ProjectDetail: React.FC = () => {
                 className="w-full h-full object-cover object-center"
               />
             ) : (
-              <img
+              <img loading="lazy" decoding="async"
                 src={project.image}
                 alt={project.title}
-                className="w-full h-full object-cover object-center"
+                className={`w-full h-full object-center ${project.imageFit === 'contain' ? 'object-contain' : 'object-cover'}`}
               />
             )}
           </div>
 
+          <dl className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 border-t border-b border-current py-8 mb-16 text-sm leading-relaxed">
+            {([['type', project.meta.type], ['role', project.meta.role], ['team', project.meta.team], ['year', project.year], ['tools', project.meta.tools.join(' · ')], ['deliverables', project.meta.deliverables]] as const).map(([label, value]) => <div key={label}><dt className="uppercase text-[10px] tracking-widest opacity-65 mb-2">{t.recruitment[label]}</dt><dd>{value}</dd></div>)}
+          </dl>
           {/* Project Details */}
           <div className="max-w-4xl mx-auto w-full flex flex-col gap-16">
             {project.overview ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8 border-t-2 border-[var(--color-kvs-dark)]">
+              <div id="project-overview" className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8 border-t-2 border-[var(--color-kvs-dark)]">
                 <div>
                   <h2 className="text-2xl font-bold uppercase tracking-widest mb-6">
-                    01. Overview
+                    01. {t.recruitment.overview}
                   </h2>
                   <div className="space-y-4 text-sm tracking-wide leading-relaxed">
-                    {project.overview.name && (
-                      <p>
-                        <span className="font-bold opacity-70">Name:</span>{" "}
-                        {project.overview.name}
-                      </p>
-                    )}
+                    {project.overview.name && <p className="font-bold">{project.overview.name}</p>}
                     {project.overview.type && (
                       <p>
-                        <span className="font-bold opacity-70">Type:</span>{" "}
+                        <span className="font-bold opacity-70">{t.recruitment.type}:</span>{" "}
                         {project.overview.type}
                       </p>
                     )}
                     {project.overview.scenario && (
                       <p>
-                        <span className="font-bold opacity-70">Scenario:</span>{" "}
+                        <span className="font-bold opacity-70">{t.recruitment.overview}:</span>{" "}
                         {project.overview.scenario}
                       </p>
                     )}
                     {project.overview.context && (
                       <p>
-                        <span className="font-bold opacity-70">Context:</span>{" "}
+                        <span className="font-bold opacity-70">{t.recruitment.overview}:</span>{" "}
                         {project.overview.context}
                       </p>
                     )}
                     {project.overview.team && (
                       <p>
-                        <span className="font-bold opacity-70">Team:</span>{" "}
+                        <span className="font-bold opacity-70">{t.recruitment.team}:</span>{" "}
                         {project.overview.team}
                       </p>
                     )}
                     {project.overview.academic && (
                       <p>
-                        <span className="font-bold opacity-70">Academic:</span>{" "}
+                        <span className="font-bold opacity-70">{t.recruitment.type}:</span>{" "}
                         {project.overview.academic}
                       </p>
                     )}
@@ -160,6 +190,15 @@ export const ProjectDetail: React.FC = () => {
               </p>
             )}
 
+            {project.caseSections?.map((section, sectionIndex) => <section key={section.title} className="flex flex-col gap-7">
+              <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-tight border-b-2 border-dotted border-current pb-3">{String(sectionIndex + 2).padStart(2, '0')}. {section.title}</h2>
+              {section.points.map(point => <p key={point} className="text-lg leading-relaxed opacity-85">{point}</p>)}
+              {section.links && <div className="flex flex-wrap gap-4">{section.links.map(link => <a key={link.url} className="portfolio-button" href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div>}
+              {section.images && <div className={`grid gap-6 ${section.images.length > 1 ? 'md:grid-cols-2' : ''}`}>{section.images.map(image => <figure key={image.src} className={`case-figure ${image.src.includes('mobile') ? 'max-w-[390px] mx-auto' : ''}`}>
+                <button type="button" className="block w-full cursor-zoom-in" aria-label={image.alt} onClick={() => setLightboxIndex(project.gallery!.indexOf(image.src))}><img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" /></button>
+                <figcaption>{image.caption}</figcaption>
+              </figure>)}</div>}
+            </section>)}
             {project.sections &&
               project.sections.map((section: any, idx: number) => (
                 <div key={idx} className="flex flex-col gap-6">
@@ -216,7 +255,7 @@ export const ProjectDetail: React.FC = () => {
                 </div>
               ))}
 
-            {project.gallery && (
+            {project.gallery && !project.caseSections && (
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-8">
                 {project.gallery.map((img: string, i: number) => {
                   let colSpan = "md:col-span-12";
@@ -233,19 +272,21 @@ export const ProjectDetail: React.FC = () => {
                       key={i}
                       className={`w-full bg-[var(--color-kvs-dark)]/5 border-2 border-[var(--color-kvs-dark)]/10 hover:border-[var(--color-kvs-dark)] transition-all overflow-hidden group cursor-pointer flex flex-col ${colSpan}`}
                       onClick={() => setLightboxIndex(i)}
+                      role="button" tabIndex={0} aria-label={`${project.title} ${i + 1}`}
+                      onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setLightboxIndex(i); } }}
                     >
                       {(img.includes('youtu.be') || img.includes('youtube.com')) ? (
                         <div className="w-full aspect-video pointer-events-none opacity-90 group-hover:opacity-100 group-hover:scale-[1.01] transition-all duration-700 block relative overflow-hidden bg-black">
-                          <iframe
+                          <iframe loading="lazy"
                             src={`https://www.youtube.com/embed/${img.split('/').pop()?.split('?')[0]}?autoplay=1&mute=1&loop=1&playlist=${img.split('/').pop()?.split('?')[0]}&controls=0&disablekb=1&playsinline=1`}
                             className="absolute inset-0 w-full h-full scale-[1.05]"
                             style={{ border: 'none' }}
                             allow="autoplay; encrypted-media"
-                            title="gallery item"
+                            title={project.title}
                           ></iframe>
                         </div>
                       ) : img.endsWith(".mp4") || img.endsWith(".mov") ? (
-                        <video
+                        <video preload="metadata"
                           src={img}
                           autoPlay
                           muted
@@ -254,7 +295,7 @@ export const ProjectDetail: React.FC = () => {
                           className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 group-hover:scale-[1.01] transition-all duration-700 block min-h-[100px]"
                         />
                       ) : (
-                        <img
+                        <img loading="lazy" decoding="async"
                           src={img}
                           alt={`${project.title} context ${i + 1}`}
                           className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 group-hover:scale-[1.01] transition-all duration-700 block min-h-[100px]"
@@ -268,10 +309,10 @@ export const ProjectDetail: React.FC = () => {
 
             <div className="pt-20 text-center">
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/?section=all-projects")}
                 className="text-sm font-bold uppercase tracking-widest border-b-2 border-transparent hover:border-[var(--color-kvs-dark)] transition-colors cursor-pointer w-fit inline-block"
               >
-                ← Back to Home
+                ← {t.recruitment.back}
               </button>
             </div>
           </div>
@@ -284,8 +325,11 @@ export const ProjectDetail: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            ref={lightboxRef}
+            role="dialog" aria-modal="true" aria-label={project.title}
             className="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-4 md:p-10"
           >
+            <button type="button" aria-label={t.recruitment.close} onClick={() => setLightboxIndex(null)} className="absolute top-6 right-6 z-[203] text-white border border-white min-w-11 min-h-11 text-2xl">×</button>
             <div
               className="absolute inset-0 cursor-zoom-out"
               onClick={() => setLightboxIndex(null)}
@@ -293,7 +337,7 @@ export const ProjectDetail: React.FC = () => {
 
             {project.gallery.length > 1 && (
               <>
-                <button
+                <button aria-label={t.recruitment.previous}
                   onClick={(e) => {
                     e.stopPropagation();
                     setLightboxIndex(
@@ -317,7 +361,7 @@ export const ProjectDetail: React.FC = () => {
                     <path d="M15 18l-6-6 6-6" />
                   </svg>
                 </button>
-                <button
+                <button aria-label={t.recruitment.next}
                   onClick={(e) => {
                     e.stopPropagation();
                     setLightboxIndex(
@@ -351,13 +395,13 @@ export const ProjectDetail: React.FC = () => {
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 className="w-full max-w-[80vw] aspect-video relative z-[201] overflow-hidden bg-black"
               >
-                <iframe
+                <iframe loading="lazy"
                   src={`https://www.youtube.com/embed/${project.gallery[lightboxIndex].split('/').pop()?.split('?')[0]}?autoplay=1&controls=1&rel=0`}
                   className="absolute inset-0 w-full h-full"
                   style={{ border: 'none' }}
                   allow="autoplay; encrypted-media"
                   allowFullScreen
-                  title="gallery lightbox"
+                  title={project.title}
                 ></iframe>
               </motion.div>
             ) : project.gallery[lightboxIndex].endsWith(".mp4") ||
@@ -384,7 +428,7 @@ export const ProjectDetail: React.FC = () => {
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 src={project.gallery[lightboxIndex]}
                 className="max-w-full max-h-full object-contain shadow-2xl relative z-[201] select-none"
-                alt="Lightbox"
+                alt={`${project.title} · ${lightboxIndex + 1}`}
               />
             )}
           </motion.div>

@@ -2,5 +2,5 @@
   "name": "Designer Portfolio",
   "description": "A trilingual personal portfolio website for a designer, featuring Work and About sections.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }
